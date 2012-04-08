@@ -6,6 +6,7 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    pkg: '<json:src/package.json>',
     docs: {
       wiki: {
         filter    : 'Home',
@@ -65,6 +66,51 @@ module.exports = function(grunt) {
         .writeln(data.serve ? 'Try opening http://localhost:3000' : 'Try running: open docs/_site/index.html');
       if(data.serve) site.preview(cb);
       else cb();
+    });
+
+
+    // reorder the page the way we want
+    var ordered = grunt.file.read('pages.txt').trim().split('\n');
+    var tmp = [];
+    ordered.forEach(function(name, i) {
+      var page = site.pages.filter(function(page) {
+        return page.name === name;
+      })[0];
+
+      tmp[i] = page;
+    });
+    site.pages = tmp;
+
+    // Now build our pageset, totally custom
+    var ps = site.data.pageset = {};
+    function json(p) { return p.toJSON(true, ''); }
+    ps.intro = site.pages.slice(1, 4).map(json);
+    ps.tasks = site.pages.filter(function(page) {
+      return path.basename(page.dirname) === 'tasks';
+    }).map(json);
+    ps.dom = site.pages.filter(function(page) {
+      return path.basename(page.dirname) === 'plugins' || page.basename === 'dom.md';
+    }).map(json);
+
+    // add package info
+    site.data.pkg = grunt.config('pkg');
+
+
+    // add an anchor to the first heading, for each page
+    site.on('page', function(p) {
+      var tokens = p.tokens,
+        first = tokens[0],
+        h1 = first.type === 'heading' && first.depth === 1;
+
+      if(!h1) return;
+
+      var slug = json(p).slug;
+      first.escaped = true;
+      first.text = first.text
+        .link('#' + slug)
+        .replace(/href/, 'id="' + slug + '" href');
+
+      p.tokens.unshift({ type: 'hr' });
     });
 
     // generate
