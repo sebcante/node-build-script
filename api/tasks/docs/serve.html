@@ -1,0 +1,50 @@
+<!DOCTYPE html>  <html> <head>   <title>serve.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="runnner.html">                 runnner.js               </a>                                           <a class="source" href="load.html">                 load.js               </a>                                           <a class="source" href="connect.html">                 connect.js               </a>                                           <a class="source" href="css.html">                 css.js               </a>                                           <a class="source" href="misc.html">                 misc.js               </a>                                           <a class="source" href="rev.html">                 rev.js               </a>                                           <a class="source" href="serve.html">                 serve.js               </a>                                           <a class="source" href="usemin.html">                 usemin.js               </a>                                           <a class="source" href="socket-enable.html">                 socket-enable.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               serve.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">),</span>
+  <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">grunt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">task</span> <span class="o">=</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">task</span><span class="p">,</span>
+    <span class="nx">config</span> <span class="o">=</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">config</span><span class="p">,</span>
+    <span class="nx">file</span> <span class="o">=</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">file</span><span class="p">,</span>
+    <span class="nx">log</span> <span class="o">=</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">log</span><span class="p">,</span>
+    <span class="nx">fail</span> <span class="o">=</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">fail</span><span class="p">,</span>
+    <span class="nx">spawn</span> <span class="o">=</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">spawn</span><span class="p">,</span>
+    <span class="nx">noop</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{};</span>
+
+  <span class="nx">task</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;serve&#39;</span><span class="p">,</span> <span class="s1">&#39;Spawns up a local http server on both staging / output directory&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">serve</span> <span class="o">=</span> <span class="nx">config</span><span class="p">(</span><span class="s1">&#39;serve&#39;</span><span class="p">),</span>
+      <span class="nx">targets</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">serve</span><span class="p">);</span> 
+
+    <span class="nx">targets</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">target</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">task</span><span class="p">.</span><span class="nx">helper</span><span class="p">(</span><span class="s1">&#39;serve&#39;</span><span class="p">,</span> <span class="nx">serve</span><span class="p">[</span><span class="nx">target</span><span class="p">],</span> <span class="nx">target</span><span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">async</span><span class="p">();</span>
+  <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>somewhat redundant with grunt's built-in serve cmd.
+might be removed.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">task</span><span class="p">.</span><span class="nx">registerHelper</span><span class="p">(</span><span class="s1">&#39;serve&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">target</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="nx">config</span><span class="p">(</span><span class="nx">target</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">cmd</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;../../node_modules/serve/bin/serve&#39;</span><span class="p">),</span>
+      <span class="nx">base</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">path</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">base</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nx">fail</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="nx">base</span>  <span class="o">+</span> <span class="s1">&#39; does not exists&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">cp</span> <span class="o">=</span> <span class="nx">spawn</span><span class="p">({</span>
+      <span class="nx">cmd</span><span class="o">:</span> <span class="nx">cmd</span><span class="p">,</span>
+      <span class="nx">args</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;--port&#39;</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">port</span><span class="p">],</span>
+      <span class="nx">opts</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">cwd</span><span class="o">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> 
+      <span class="p">}</span>
+    <span class="p">},</span> <span class="nx">noop</span><span class="p">);</span>
+
+    <span class="nx">cp</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">stdout</span><span class="p">);</span>
+    <span class="nx">cp</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">stderr</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">cp</span><span class="p">;</span>
+  <span class="p">});</span>
+
+<span class="p">};</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

@@ -1,0 +1,1462 @@
+<!doctype html public "✰">
+<!--[if lt IE 7]> <html lang="en" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>    <html lang="en" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html lang="en" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>h5bp/node-build-script .::. Home</title>
+  <meta name="viewport" content="width=device-width">
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="./css/style.css" >
+  <link rel="stylesheet" href="./css/grey.css" >
+  <style>
+    .themes { position: fixed; right: 2em; top: 1em; }
+    .themes a { font-size: 0.8em; float: left; margin-left: 0.5em; }
+    .themes a[href="#dark"] { color: #444; }
+    .themes a[href="#white"] { color: #fff; }
+    .themes a[href="#grey"] { color: #aaa; }
+  </style>
+  <script>
+    (function($, exports) {
+      $ = $ || function(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel));};
+      var m = (location.hash.match(/^#([\w]+)/) || [])[1],
+        link = $('link')[2];
+      if(m && !!~['dark', 'white', 'grey'].indexOf(m)) {
+        link.href = link.href.replace(/[^\/]+.css$/, m + '.css');
+      }
+      this.$ = $;
+    })(this.jQuery || this.Zepto, this);
+  </script>
+</head>
+<body>
+
+  <p class="themes">
+    <a href="#dark">dark</a>
+    <a href="#white">white</a>
+    <a href="#grey">grey</a>
+  </p>
+
+  <aside id="sidebar" class="interface">
+
+    <a class="toc_title" href="#">
+      h5bp/node-build-script <span class="version">(0.0.1)</span>
+    </a>
+    <ul class="toc_section">
+      <li><a href="http://github.com/h5bp/node-build-script">GitHub Repository</a></li>
+      <li><a href="./api/root/docs/h5bp.html">Annotated Source</a></li>
+      <ul>
+        <li><a href="./api/tasks/docs/css.html">Grunt Tasks</a></li>
+        <li><a href="./api/lib/docs/index.html">Lib & Dom plugins</a></li>
+      </ul>
+    </ul>
+
+    <a class="toc_title" href="#home">Introduction</a>
+    <ul class="toc_section">
+      <li><a href="#install">install</a></li>
+      <li><a href="#overview">overview</a></li>
+      <li><a href="#configuration">configuration</a></li>
+    </ul>
+    <a class="toc_title" href="#tasks">Tasks</a>
+    <ul class="toc_section">
+      <li><a href="#tasks">tasks</a></li>
+      <li><a href="#clean">clean</a></li>
+      <li><a href="#concat">concat</a></li>
+      <li><a href="#connect">connect</a></li>
+      <li><a href="#css">css</a></li>
+      <li><a href="#min">min</a></li>
+      <li><a href="#mkdirs">mkdirs</a></li>
+      <li><a href="#rev">rev</a></li>
+      <li><a href="#serve">serve</a></li>
+      <li><a href="#usemin">usemin</a></li>
+    </ul>
+
+    <a class="toc_title" href="#tasks">Dom based</a>
+    <ul class="toc_section">
+      <li><a href="#dom">dom</a></li>
+      <li><a href="#link-plugin">link-plugin</a></li>
+      <li><a href="#rev-plugin">rev-plugin</a></li>
+      <li><a href="#script-plugin">script-plugin</a></li>
+    </ul>
+  </aside>
+
+  <div class="container">
+
+    <section id=documentation>
+
+        <hr>
+<h1><a id="home" href="#home">node-build-script</a></h1>
+<p>The h5bp build script based on ant has been ported to use node as a
+build tool. It is clearly not a replacement for the ant build script,
+but is now a valid alternative to ant / java based build system.
+
+</p>
+<p>Expect a few glitch, as it&#39;s still under heavy development, even though
+there&#39;s quite a few <a href="../test/">tests</a> already set up.
+
+</p>
+<p>There was a first attempt using cake and coffeescript to do that. This
+port has been itself ported to use <a href="https://github.com/cowboy/grunt">grunt</a> instead.
+
+</p>
+<p>Here we&#39;ll go through grunt usage and the h5bp build script
+documentation based on it.
+
+</p>
+<h2>Getting started</h2>
+<ul>
+<li><a href="../install/">Install</a> the package</li>
+<li>Check out the extensive <a href="https://github.com/cowboy/grunt/blob/master/docs/toc.md">grunt documentation</a>, specifically the
+<a href="https://github.com/cowboy/grunt/blob/master/docs/getting_started.md#readme)">Getting Started</a> section.</li>
+<li>Learn more about about <a href="../overview/">Usage</a> and <a href="../configuration/">Configuration</a></li>
+<li>Look at the <a href="../tasks/">available tasks</a></li>
+<li>Test out the experimental <a href="../dom/">dom-based</a> build system.</li>
+</ul>
+
+        <hr>
+<h1><a id="install" href="#install">Install</a></h1>
+<h2>Requirements</h2>
+<p>In order to successfully use this you will need:
+
+</p>
+<ul>
+<li>node = 0.6.7</li>
+<li>npm</li>
+</ul>
+<p>You should be able to use it on:
+
+</p>
+<ul>
+<li>OSX</li>
+<li>Unix</li>
+<li>Windows</li>
+</ul>
+<h2>Install instructions</h2>
+<p>There is two main way to install, using a &quot;global&quot; or a &quot;local&quot; install.
+
+</p>
+<ol>
+<li><p><strong>When installed globally</strong>: Provides a custom global binary named <code>h5bp</code>
+(or <code>html5-boilerplate</code>) which is a wrapper on top of grunt, plus the extra
+specific task and helpers.</p>
+</li>
+<li><p><strong>When installed locally</strong>: ability to load in your project and grunt setup a
+set of tasks that get referenced in your gruntfile (<code>grunt.js</code>) when run via <code>grunt</code>.</p>
+</li>
+</ol>
+<p>node-build-script is not on npm (yet), but you can install it (and/or add it to
+your project dependencies) using a tarball url, very much like if it was published
+on npm.
+
+
+</p>
+<h3>global install</h3>
+<pre><code class="sh">npm install https:&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">comment</span>">//<span class="id">github</span>.<span class="id">com</span>/<span class="id">h5bp</span>/<span class="id">node</span>-<span class="id">build</span>-<span class="id">script</span>/<span class="id">tarball</span>/<span class="id">master</span> -<span class="id">g</span>&lt;/<span class="id">span</span>></span></code></pre>
+<p>This installs the plugin globally, which contains its own internal grunt and
+provides an <code>h5bp</code> binary.
+
+</p>
+<p>Proxies don&#39;t like redirections, if you get problem with this command, try
+this instead:
+
+</p>
+<pre><code class="sh">npm install http://nodeload<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.github<span class="tag">&lt;/<span class="title">span</span>></span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.com<span class="tag">&lt;/<span class="title">span</span>></span>/h5bp/node-build-script/tarball/master -g</code></pre>
+<h3>local install</h3>
+<p>This works for system where grunt have been already installed globally with
+
+</p>
+<pre><code class="sh"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"title"</span>></span>npm<span class="tag">&lt;/<span class="title">span</span>></span> install grunt -g.</code></pre>
+<ol>
+<li><p>Add the node-build-script as a project dependency. In your projet&#39;s root,
+next to the <code>grunt.js</code> and <code>package.json</code> file, run <code>npm install
+http://nodeload.github.com/h5bp/node-build-script/tarball/master -S</code></p>
+</li>
+<li><p>Add <code>grunt.loadNpmTasks(&#39;node-build-script&#39;)</code> into the projetc&#39;s <code>grunt.js</code> gruntfile.</p>
+</li>
+<li><p>Run <code>grunt --help</code> and all of the node-build-script&#39;s tasks and helpers
+should be available in addition to those already provided by grunt.</p>
+</li>
+</ol>
+<p>The <code>-S</code> flag (or <code>--save</code>) will make npm add the dependency in the
+<code>dependencies</code> property of your package.json. This is optional but ensures you
+never forget to update your package.json file accordingly.
+
+</p>
+<p><strong>Note</strong>: Once on npm, it&#39;ll be easier. The <code>npm install -S</code> step will add the
+following to your package.json file.
+
+</p>
+<pre><code class="js">"dependencies": {
+  "node-build-script": "0.1.0"
+}</code></pre>
+<p>Change <code>0.1.0</code> to the tarball url: <a href="http://nodeload.github.com/h5bp/node-build-script/tarball/master">http://nodeload.github.com/h5bp/node-build-script/tarball/master</a>
+
+</p>
+<h3>git clone / npm install</h3>
+<p>Clone or download this repo. Then, <code>cd</code> into it and run the <code>npm
+install</code> command.
+
+</p>
+<pre><code class="sh">&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">preprocessor</span>"># <span class="id">will</span> <span class="id">most</span> <span class="id">likely</span> <span class="id">change</span> <span class="id">to</span> <span class="id">map</span> <span class="id">the</span> <span class="id">new</span> <span class="id">location</span> / <span class="id">repo</span> / <span class="id">branch</span>&lt;/<span class="id">span</span>></span>
+git clone git:&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">comment</span>">//<span class="id">github</span>.<span class="id">com</span>/<span class="id">h5bp</span>/<span class="id">node</span>-<span class="id">build</span>-<span class="id">script</span>.<span class="id">git</span>&lt;/<span class="id">span</span>></span>
+
+&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">preprocessor</span>"># <span class="id">install</span> <span class="id">the</span> <span class="id">dependencies</span>&lt;/<span class="id">span</span>></span>
+&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">preprocessor</span>"># <span class="id">locally</span> <span class="id">to</span> <span class="id">play</span> <span class="id">with</span> <span class="id">it</span> <span class="id">from</span> <span class="id">the</span> <span class="id">repo</span>&lt;/<span class="id">span</span>></span>
+npm install
+
+&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">preprocessor</span>"># <span class="id">or</span> <span class="id">globally</span>, <span class="id">to</span> <span class="id">install</span> <span class="id">the</span> <span class="id">h5bp</span> <span class="id">binary</span>&lt;/<span class="id">span</span>></span>
+npm install -g</code></pre>
+<p>For development, the <code>npm link</code> command might be handy (posix only, instead of
+<code>npm install -g</code>).
+
+</p>
+<h2>Uninstall</h2>
+<p>You may want to uninstall the globally installed package by running the
+following command:
+
+</p>
+<pre><code class="sh">npm uninstall node-build-<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>script<span class="tag">&lt;/<span class="title">span</span>></span> -g</code></pre>
+<p>So sad to see you go ☹
+
+</p>
+<p>If it was installed locally, next to your gruntfile, simply drop the
+<code>node_modules/node-build-script</code> folder.
+
+</p>
+
+        <hr>
+<h1><a id="overview" href="#overview">Overview</a></h1>
+<p>node-build-script is a tool that optimizes your code for production use on the
+web, relying on <a href="https://github.com/cowboy/grunt">grunt</a> build tool.
+
+</p>
+<p>It is packaged as a grunt plugin, it defines an <code>h5bp</code> binary which wraps grunt
+plus few additional tasks and helpers.
+
+</p>
+<p>But nothing is forcing you to install this package globally, you can
+decide to pull in the set of tasks and helper in your grunt setup,
+instead of relying on the global <code>h5bp</code> binary.
+
+</p>
+<h2>Install</h2>
+<p>node-build-script is not available on npm yet, but you can install it
+via npm very much the same way.
+
+</p>
+<p>Installing the package is as simple as running the following command:
+
+</p>
+<pre><code>npm install https:&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">comment</span>">//<span class="id">github</span>.<span class="id">com</span>/<span class="id">h5bp</span>/<span class="id">node</span>-<span class="id">build</span>-<span class="id">script</span>/<span class="id">tarball</span>/<span class="id">master</span>&lt;/<span class="id">span</span>></span></code></pre>
+<p>You can find more detailed documentation in the <a href="../install/">installation section</a>.
+
+</p>
+<h2>Usage</h2>
+<p><strong>This assumes the package was installed globally. It it was installed
+locally, simply replace <code>h5bp</code> by <code>grunt</code> in the following commands</strong>
+
+</p>
+<p>Running <code>h5bp --help</code> should output the following to the console
+
+</p>
+<pre><code>grunt: a task-based command line build tool <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> JavaScript projects. (v0.<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>3<span class="tag">&lt;/<span class="title">span</span>></span>.<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>7<span class="tag">&lt;/<span class="title">span</span>></span>)
+
+Usage
+ h5bp [options] [task [task ...]]
+
+Options
+    --help, -h  Display this help text.
+        --base  Specify an alternate base path. By default, all file paths are
+                relative to the "grunt.js" gruntfile. (grunt.file.setBase) *
+    --no-color  Disable colored output.
+      --config  Specify an alternate "grunt.js" gruntfile.
+   --debug, -d  Enable debugging mode <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> tasks that support it. <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>For<span class="tag">&lt;/<span class="title">span</span>></span> detailed
+                error stack traces, specify --debug <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>9<span class="tag">&lt;/<span class="title">span</span>></span>.
+   --force, -f  A way to force your way past warnings. Want a suggestion? Don't
+                use this option, fix your code.
+       --tasks  Additional directory paths to scan <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> task and "extra" files.
+                (grunt.loadTasks) *
+         --npm  Npm-installed grunt plugins to scan <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> task and "extra" files.
+                (grunt.loadNpmTasks) *
+    --no-write  Disable writing files (dry run).
+ --verbose, -v  Verbose mode. A lot more information output.
+     --version  Print the grunt version.
+
+Options marked with * have methods exposed via the grunt API and should instead
+be specified inside the "grunt.js" gruntfile wherever possible.
+
+Available tasks
+        concat  Concatenate files. *
+          init  Generate project scaffolding from a predefined template.
+          lint  Validate files with JSHint. *
+           min  Minify files with UglifyJS. *
+         qunit  Run QUnit unit tests <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> a headless PhantomJS instance. *
+        server  Start a static web server.
+          test  Run unit tests with nodeunit. *
+         watch  Run predefined tasks whenever watched files change.
+       default  Alias <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> "intro clean mkdirs concat css min rev usemin
+                manifest" tasks.
+        reload  Alias <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> "default connect watch:reload" tasks.
+           css  Concats, replaces @imports and minifies the CSS files *
+         intro  Kindly inform the developer about the impending magic
+        mkdirs  Prepares the build dirs *
+         clean  Wipe the previous build dirs
+      manifest  Generates manifest files automatically from static assets
+                reference. *
+           rev  Automate the hash renames of assets filename *
+         serve  Spawns up a local http server on both staging / output
+                directory
+        usemin  Replaces references to non-minified scripts / stylesheets *
+
+Tasks run <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> the order specified. Arguments may be passed to tasks that accept
+them by using semicolons, like "lint:files". Tasks marked with * are "multi
+tasks" and will iterate over all sub-targets <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>if<span class="tag">&lt;/<span class="title">span</span>></span> no argument is specified.
+
+The list of available tasks may change based on tasks directories or grunt
+plugins specified <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> the "grunt.js" gruntfile or via command-line options.
+
+<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"flow"</span>></span>For<span class="tag">&lt;/<span class="title">span</span>></span> more information, see https://github.com/cowboy/grunt</code></pre>
+<h2>Loading tasks and helpers in your grunt setup</h2>
+<p>You may opt to go for the local install, and manually load the tasks and helpers
+the node-build-script provides.
+
+</p>
+<p>Assuming you have no gruntfile yet for your project, run the following grunt init command:
+
+</p>
+<pre><code><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"title"</span>></span>grunt<span class="tag">&lt;/<span class="title">span</span>></span> init:gruntfile</code></pre>
+<p>Grunt will ask you for few different things, simply follow the instructions.
+This will create a new <code>grunt.js</code> file relative to your current working
+directory.
+
+</p>
+<p>The generated gruntfile should look like this (depending on the answers
+to the few questions, check out <a href="https://github.com/cowboy/grunt/blob/master/docs/task_init.md#gruntfile">related grunt documentation</a>)
+
+</p>
+<pre><code class="js">/*global <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>module:<span class="tag">&lt;/<span class="title">span</span>></span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>false<span class="tag">&lt;/<span class="title">span</span>></span>*/
+module.exports = function(grunt) {
+
+  // <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"class"</span>></span>Project<span class="tag">&lt;/<span class="title">span</span>></span> configuration.
+  grunt.initConfig({
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>pkg:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'&amp;lt;json:package.json>'<span class="tag">&lt;/<span class="title">span</span>></span>,
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>meta:<span class="tag">&lt;/<span class="title">span</span>></span> {
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>banner:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'/*! &amp;lt;%= pkg.title || pkg.name %> - v&amp;lt;%= pkg.version %> - '<span class="tag">&lt;/<span class="title">span</span>></span> +
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'&amp;lt;%= grunt.template.today("yyyy-mm-dd") %>\n'<span class="tag">&lt;/<span class="title">span</span>></span> +
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'&amp;lt;%= pkg.homepage ? "* " + pkg.homepage + "\n" : "" %>'<span class="tag">&lt;/<span class="title">span</span>></span> +
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'* Copyright (c) &amp;lt;%= grunt.template.today("yyyy") %> &amp;lt;%= pkg.author.name %>;'<span class="tag">&lt;/<span class="title">span</span>></span> +
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>' Licensed &amp;lt;%= _.pluck(pkg.licenses, "type").join(", ") %> */'<span class="tag">&lt;/<span class="title">span</span>></span>
+    },
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>lint:<span class="tag">&lt;/<span class="title">span</span>></span> {
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>files:<span class="tag">&lt;/<span class="title">span</span>></span> [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'grunt.js'<span class="tag">&lt;/<span class="title">span</span>></span>, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'lib/**/*.js'<span class="tag">&lt;/<span class="title">span</span>></span>, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'test/**/*.js'<span class="tag">&lt;/<span class="title">span</span>></span>]
+    },
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>qunit:<span class="tag">&lt;/<span class="title">span</span>></span> {
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>files:<span class="tag">&lt;/<span class="title">span</span>></span> [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'test/**/*.html'<span class="tag">&lt;/<span class="title">span</span>></span>]
+    },
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>concat:<span class="tag">&lt;/<span class="title">span</span>></span> {
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>dist:<span class="tag">&lt;/<span class="title">span</span>></span> {
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>src:<span class="tag">&lt;/<span class="title">span</span>></span> [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'&amp;lt;banner>'<span class="tag">&lt;/<span class="title">span</span>></span>, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'&amp;lt;file_strip_banner:lib/&amp;lt;%= pkg.name %>.js>'<span class="tag">&lt;/<span class="title">span</span>></span>],
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>dest:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'dist/&amp;lt;%= pkg.name %>.js'<span class="tag">&lt;/<span class="title">span</span>></span>
+      }
+    },
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>min:<span class="tag">&lt;/<span class="title">span</span>></span> {
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>dist:<span class="tag">&lt;/<span class="title">span</span>></span> {
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>src:<span class="tag">&lt;/<span class="title">span</span>></span> [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'&amp;lt;banner>'<span class="tag">&lt;/<span class="title">span</span>></span>, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'&amp;lt;config:concat.dist.dest>'<span class="tag">&lt;/<span class="title">span</span>></span>],
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>dest:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'dist/&amp;lt;%= pkg.name %>.min.js'<span class="tag">&lt;/<span class="title">span</span>></span>
+      }
+    },
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>watch:<span class="tag">&lt;/<span class="title">span</span>></span> {
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>files:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'&amp;lt;config:lint.files>'<span class="tag">&lt;/<span class="title">span</span>></span>,
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>tasks:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'lint qunit'<span class="tag">&lt;/<span class="title">span</span>></span>
+    },
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>jshint:<span class="tag">&lt;/<span class="title">span</span>></span> {
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>options:<span class="tag">&lt;/<span class="title">span</span>></span> {
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>curly:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>eqeqeq:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>immed:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>latedef:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>newcap:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>noarg:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>sub:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>undef:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>boss:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>eqnull:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>browser:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>
+      },
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>globals:<span class="tag">&lt;/<span class="title">span</span>></span> {
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>jQuery:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>
+      }
+    },
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>uglify:<span class="tag">&lt;/<span class="title">span</span>></span> {}
+  });
+
+  // <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"class"</span>></span>Default<span class="tag">&lt;/<span class="title">span</span>></span> task.
+  grunt.registerTask(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'default'<span class="tag">&lt;/<span class="title">span</span>></span>, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'lint qunit concat min'<span class="tag">&lt;/<span class="title">span</span>></span>);
+
+};</code></pre>
+<p>To load the node-build-script and helpers, you&#39;ll need to use
+
+</p>
+<pre><code class="js">grunt.loadNpmTasks('node-build-<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>script<span class="tag">&lt;/<span class="title">span</span>></span>')</code></pre>
+<p>next to
+
+</p>
+<pre><code class="js">grunt.registerTask('default', <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'lint qunit concat min'<span class="tag">&lt;/<span class="title">span</span>></span>);</code></pre>
+<p>Then, from your projet&#39;s root, running <code>grunt --help</code> should output the
+following:
+
+</p>
+<pre><code>...
+
+Available tasks
+        concat  Concatenate files. *
+          init  Generate project scaffolding from a predefined template.
+          lint  Validate files <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>with<span class="tag">&lt;/<span class="title">span</span>></span> JSHint. *
+           min  Minify files <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>with<span class="tag">&lt;/<span class="title">span</span>></span> UglifyJS. *
+         qunit  Run QUnit unit tests <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> a headless PhantomJS instance. *
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"built_in"</span>></span>server<span class="tag">&lt;/<span class="title">span</span>></span>  Start a static web <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"built_in"</span>></span>server<span class="tag">&lt;/<span class="title">span</span>></span>.
+          test  Run unit tests <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>with<span class="tag">&lt;/<span class="title">span</span>></span> nodeunit. *
+         watch  Run predefined tasks whenever watched files change.
+       <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>default<span class="tag">&lt;/<span class="title">span</span>></span>  Alias <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>"lint qunit concat min"<span class="tag">&lt;/<span class="title">span</span>></span> tasks.
+          emit  A basic task that emits events over socket.io
+       connect  Spawns up a local http <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"built_in"</span>></span>server<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>with<span class="tag">&lt;/<span class="title">span</span>></span> socket.io enabled
+           css  Concats, replaces @imports <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>and<span class="tag">&lt;/<span class="title">span</span>></span> minifies the CSS files *
+         intro  Kindly inform the developer about the impending magic
+        mkdirs  Prepares the build dirs *
+         clean  Wipe the previous build dirs
+      manifest  Generates manifest files automatically from static assets
+                reference. *
+           rev  Automate the hash renames of assets filename *
+         serve  Spawns up a local http <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"built_in"</span>></span>server<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> both staging / output
+                directory
+        usemin  Replaces references <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> non-minified scripts / stylesheets *
+
+...</code></pre>
+
+        <hr>
+<h1><a id="configuration" href="#configuration">H5BP Build configuration</a></h1>
+<p>For what it&#39;s worth, here&#39;s the basic current configuration for the
+build script, which is located in repo&#39;s root.
+
+</p>
+<p>You may edit this configuration by creating a grunt.js file in the
+current working directory and tweak any configuration values below. The
+binary will lookup for this file, and fallback accordingly to the
+default one if it wasn&#39;t able to find one.
+
+</p>
+<p>To learn more about each configuration property (which are generally
+mapping a task name, in the case of <a href="https://github.com/cowboy/grunt/blob/master/docs/types_of_tasks.md#multi-tasks">multi-tasks</a> type of task), refer
+to the according <a href="../tasks/">task documentation</a>.
+
+</p>
+<pre><code class="js">
+// This <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>is<span class="tag">&lt;/<span class="title">span</span>></span> the main html5-boilerplate build <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>configuration<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>file<span class="tag">&lt;/<span class="title">span</span>></span>.
+//
+// Builds depends <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> two specific directory created during the <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>process<span class="tag">&lt;/<span class="title">span</span>></span>
+// `intermediate/` <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>and<span class="tag">&lt;/<span class="title">span</span>></span> `publish/`, the first <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>is<span class="tag">&lt;/<span class="title">span</span>></span> used as a staging area, the
+// second <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>is<span class="tag">&lt;/<span class="title">span</span>></span> the final result <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>of<span class="tag">&lt;/<span class="title">span</span>></span> the build that was run.
+//
+// These two values may be changed <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> something <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>else<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>with<span class="tag">&lt;/<span class="title">span</span>></span> the `staging` <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>and<span class="tag">&lt;/<span class="title">span</span>></span>
+// `output` config property below, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>and<span class="tag">&lt;/<span class="title">span</span>></span> by changing any task config <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> match the <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>new<span class="tag">&lt;/<span class="title">span</span>></span> value.
+//
+module.exports = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>function<span class="tag">&lt;/<span class="title">span</span>></span>(grunt) {
+  // Grunt utilities
+  var config = grunt.config,
+    utils = grunt.utils;
+
+  // the staging directory used during the <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>process<span class="tag">&lt;/<span class="title">span</span>></span>
+  var staging ='intermediate/';
+
+  // final build output
+  var output = 'publish/';
+
+  // extend the grunt.utils object <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>with<span class="tag">&lt;/<span class="title">span</span>></span> h5bp's utilities, wrapping  require
+  // calls <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> utility libs (rimraf, ncp, mkdirp) as lazy-loaded getters.
+  h5bp.utils.extend(utils);
+
+  //
+  // Grunt <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>configuration<span class="tag">&lt;/<span class="title">span</span>></span>
+  //
+  config.init({
+    // the staging directory used during the <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>process<span class="tag">&lt;/<span class="title">span</span>></span>
+    staging: staging,
+
+    // final build output
+    output: output,
+
+    // environement <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>and<span class="tag">&lt;/<span class="title">span</span>></span> common <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>configuration<span class="tag">&lt;/<span class="title">span</span>></span> values
+    // <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> futher usage <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> tasks that needs them.
+    env: {
+      platform: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>process<span class="tag">&lt;/<span class="title">span</span>></span>.platform,
+      win32: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>process<span class="tag">&lt;/<span class="title">span</span>></span>.platform === <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'win32'<span class="tag">&lt;/<span class="title">span</span>></span>
+    },
+
+    // filter any files matching one <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>of<span class="tag">&lt;/<span class="title">span</span>></span> the below pattern during mkdirs task
+    exclude: 'build/** node_modules/** grunt.js <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>package<span class="tag">&lt;/<span class="title">span</span>></span>.json *.md'.split(' '),
+
+    mkdirs: {
+      staging: '&amp;lt;config:exclude>',
+      output: '&amp;lt;config:exclude>'
+    },
+
+    usemin: {
+      files: ['**/*.html']
+    },
+
+    manifest: '&amp;lt;config:usemin>',
+
+    watch: {
+      files: ['js/**/*.js', 'css/**', '*.html'],
+      tasks: 'default',
+
+      reload: {
+        files: '&amp;lt;config:watch.files>',
+        tasks: 'default emit'
+      }
+    },
+
+    css: {
+      'css/style.css': ['css/style.css']
+    },
+
+    // are resolved below the output directory
+    rev: {
+      js: 'js/**/*.js',
+      css: 'css/**/*.css',
+      img: 'img/**'
+    },
+
+    serve: {
+      staging: { <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>port<span class="tag">&lt;/<span class="title">span</span>></span>: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>3000<span class="tag">&lt;/<span class="title">span</span>></span> },
+      output: { <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>port<span class="tag">&lt;/<span class="title">span</span>></span>: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>3001<span class="tag">&lt;/<span class="title">span</span>></span> }
+    },
+
+    connect: {
+      staging: {
+        hostname: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'localhost'<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>port<span class="tag">&lt;/<span class="title">span</span>></span>: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>3000<span class="tag">&lt;/<span class="title">span</span>></span>,
+        logs: 'dev',
+        dirs: true
+      },
+      output: {
+        hostname: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'localhost'<span class="tag">&lt;/<span class="title">span</span>></span>,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>port<span class="tag">&lt;/<span class="title">span</span>></span>: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>3001<span class="tag">&lt;/<span class="title">span</span>></span>,
+        logs: 'default',
+        dirs: true
+      }
+    },
+
+    dom: {
+
+      files                   : ['*.html'],
+
+      options: {
+        //
+        // cwd - base directory <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> work from.
+        // <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>out<span class="tag">&lt;/<span class="title">span</span>></span> - optimized assets get resolved <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> this path.
+        //
+      },
+
+      'script[data-build]'    : h5bp.plugins.script,
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'link'<span class="tag">&lt;/<span class="title">span</span>></span>                  : h5bp.plugins.link,
+      'img'                   : h5bp.plugins.img,
+      'script, link, img'     : h5bp.plugins.rev
+    },
+
+    lint: {
+      files: ['js/*.js'],
+      build: ['grunt.js', 'tasks/*.js']
+    }
+  });
+
+  //
+  // Concat <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>configuration<span class="tag">&lt;/<span class="title">span</span>></span> - prepending output / staging values <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> task's target
+  //
+  // files are concat'd into `staging/subprop.js`
+  // (eg. intermediate/js/scripts.js)
+  //
+  // This <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>is<span class="tag">&lt;/<span class="title">span</span>></span> necessary config <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> the built-<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> min / concat task <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> operate
+  // <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> staging <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>or<span class="tag">&lt;/<span class="title">span</span>></span> output directory, without the need <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> prepend their values
+  // directly <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> the task target <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>or<span class="tag">&lt;/<span class="title">span</span>></span> data (as they may be tweaked <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> some other values)
+  //
+  // Will probably flesh <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>out<span class="tag">&lt;/<span class="title">span</span>></span> a custom concat / min task, using grunt's helper <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span>
+  // handle these values prepends.
+  //
+  var concat = config('concat') || {};
+  concat[staging + 'js/scripts.js'] = ['js/plugins.js', 'js/script.js'];
+  concat[staging + 'css/style.css'] = ['css/*.css'];
+  config('concat', concat);
+
+  //
+  // Min <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>configuration<span class="tag">&lt;/<span class="title">span</span>></span> - same goes the minify task
+  // (eg. publish/js/scripts.js)
+  //
+  var min = config('min') || {};
+  min[output + 'js/scripts.js'] = [staging + 'js/plugins.js', staging + 'js/script.js'];
+  config('min', min);
+
+  // Run the following tasks...
+  grunt.registerTask('default', 'intro clean mkdirs concat css min rev usemin manifest');
+  grunt.registerTask('reload', 'default connect watch:reload');
+
+  // dom based tasks - <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>not<span class="tag">&lt;/<span class="title">span</span>></span> loaded <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>for<span class="tag">&lt;/<span class="title">span</span>></span> windows platform
+  config('env.win32') || grunt.loadTasks('./tasks/dom');
+
+  // regular tasks
+  grunt.loadTasks('./tasks/support');
+
+};</code></pre>
+
+        <hr>
+<h1><a id="tasks" href="#tasks">Tasks</a></h1>
+<p>You&#39;ll find below a basic description and documentation for each task
+the grunt h5bp plugin provides. For each of these, we&#39;ll detail the
+task&#39;s configuration and how to change this.
+
+</p>
+<ul>
+<li><strong><a href="../clean/">clean</a></strong>: Wipe the previous build dirs.</li>
+<li><strong><a href="../mkdirs/">mkdirs</a></strong>: Prepares the build dirs.</li>
+<li><strong><a href="../concat/">concat</a></strong>: Concatenate files. <em>(built-in)</em></li>
+<li><strong><a href="../css/">css</a></strong>: Concats, replaces @imports and minifies CSS files.</li>
+<li><strong><a href="../min/">min</a></strong>: Minify files using UglifyJS</li>
+<li><strong><a href="../rev/">rev</a></strong>: Automate the revving of assets and perform the hash rename</li>
+<li><strong><a href="../usemin/">usemin</a></strong>: Replaces references to non-minified scripts / stylesheets</li>
+</ul>
+<p>In addition to those tasks, which are the backbone of the build script,
+there are a few additionnal tasks to help you in the process:
+
+</p>
+<ul>
+<li><strong><a href="../serve/">serve</a></strong>: Spawns up a basic local http server (on both pubilsh /
+intermediate folder with different ports).</li>
+<li><strong><a href="../connect/">connect</a></strong>:  Spawns up local http sever with socket.io configured,
+it&#39;ll inject a tiny client side script + socket.io lib on <code>*.html</code>
+response.</li>
+<li><strong>reload</strong>: Alias for <code>connect watch:reload</code>.</li>
+</ul>
+
+        <hr>
+<h1><a id="clean" href="#clean">Task - clean</a></h1>
+<p>The clean task will remove and delete any previous build dirs (which
+are mapping <code>staging</code> and <code>output</code> config value).
+
+</p>
+<pre><code class="js"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"title"</span>></span>staging<span class="tag">&lt;/<span class="title">span</span>></span>:<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span> 'intermediate/'<span class="tag">&lt;/<span class="title">span</span>></span>,
+
+// final build output
+<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"title"</span>></span>output<span class="tag">&lt;/<span class="title">span</span>></span>:<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span> 'publish/'<span class="tag">&lt;/<span class="title">span</span>></span>,</code></pre>
+<h2>Helpers</h2>
+<h3>rimraf</h3>
+<p><code>rimraf</code> is the helper wrapper for
+<a href="https://github.com/isaacs/rimraf#readme">rimraf</a> package. The given
+<code>cb</code> callback if passed in will make the call asynchronous, otherwise
+<code>rimraf.sync</code> is used.
+
+</p>
+<pre><code>&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">title</span>"><span class="id">task</span>&lt;/<span class="id">span</span>>.<span class="id">helper</span>('<span class="id">rimraf</span>', <span class="id">dir</span>, <span class="id">cb</span>);</span></code></pre>
+
+        <hr>
+<h1><a id="concat" href="#concat">Task - concat</a></h1>
+<p><a href="https://github.com/cowboy/grunt/blob/master/docs/task_concat.md#readme">Read the grunt documentation on concat built-in
+task</a>
+
+</p>
+<p>Concat is a built-in grunt task and allows you to easily concatenate a
+list of files.
+
+</p>
+<pre><code class="js">concat: {
+  &lt;span <span class="class"><span class="keyword">class</span>="<span class="id">comment</span>">'<span class="id">intermediate</span>/<span class="id">js</span>/<span class="id">scripts</span>.<span class="id">js</span>': [ '<span class="id">js</span>/<span class="id">plugins</span>.<span class="id">js</span>', '<span class="id">js</span>/<span class="id">script</span>.<span class="id">js</span>' ],&lt;/<span class="id">span</span>></span>
+  &lt;span <span class="class"><span class="keyword">class</span>="<span class="id">comment</span>">'<span class="id">intermediate</span>/<span class="id">css</span>/<span class="id">style</span>.<span class="id">css</span>': [ '<span class="id">css</span>/*.<span class="id">css</span>' ]&lt;/<span class="id">span</span>></span>
+},</code></pre>
+<p>The mechanism is fairly simple:
+
+</p>
+<ul>
+<li>config subprop are the destination files.</li>
+<li>config subprop values are an array of glob patterns that will be
+expanded in the corresponding file arrays.</li>
+</ul>
+<p>Each &quot;fileset&quot; is then concat into one file, the destination one.
+
+</p>
+<p>If order is important, you might need to be a little more explicit here
+and specify each script to be included (as glob patterns won&#39;t ensure
+this). Actually, you can see this in action here with the
+<code>intermediate/js/scripts.js</code> file.
+
+</p>
+<p>This is a <strong>really</strong> basic concat configuration, there&#39;s much more
+built-in in the grunt concat task, like <a href="https://github.com/cowboy/grunt/blob/master/docs/task_concat.md#banner-comments">banner comments</a>, <a href="https://github.com/cowboy/grunt/blob/master/docs/task_concat.md#multiple-build-targets">multiple build
+targets</a>, and <a href="https://github.com/cowboy/grunt/blob/master/docs/task_concat.md#dynamic-filenames">dynamic filenames</a>. You&#39;re encouraged to edit this
+basic concat configuration to match your very own setup.
+
+</p>
+
+        <hr>
+<h1><a id="connect" href="#connect">Task - connect</a></h1>
+<p>The connect is a special little utility task working in tandem with the
+watch one.
+
+</p>
+<p>It&#39;s a slight variation of the serve command, but includes / injects
+some socket.io magic to be able to reload any opened webpage in your
+browsers.
+
+</p>
+<p>Basically, the idea is that anytime you change a watched files
+(js/css/templates, etc.), a new build is triggered and an event is
+emitted back to any connected clients to reload pages automatically.
+
+</p>
+<pre><code class="js"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>connect:<span class="tag">&lt;/<span class="title">span</span>></span> {
+
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>intermediate:<span class="tag">&lt;/<span class="title">span</span>></span> {
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>port:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>3000<span class="tag">&lt;/<span class="title">span</span>></span>,
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>logs:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'dev'<span class="tag">&lt;/<span class="title">span</span>></span>,
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>dirs:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>
+  },
+
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>publish:<span class="tag">&lt;/<span class="title">span</span>></span> {
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>port:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>3001<span class="tag">&lt;/<span class="title">span</span>></span>,
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>logs:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'default'<span class="tag">&lt;/<span class="title">span</span>></span>,
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>dirs:<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>true<span class="tag">&lt;/<span class="title">span</span>></span>
+  }
+
+}</code></pre>
+<h2>Helpers</h2>
+<blockquote>
+<p>todo
+</p>
+</blockquote>
+
+        <hr>
+<h1><a id="css" href="#css">Task - css</a></h1>
+<p>The css tasks will handle stylesheets optimizations. These optimizations
+include:
+
+</p>
+<ul>
+<li>CSS <code>@import</code> statements inlining (borrowed to r.js)</li>
+<li>CSS minification (through
+<a href="https://github.com/GoalSmashers/clean-css">CSSMin</a>, todo consider
+using <a href="https://github.com/ded/sqwish">sqwish</a>, probably through
+<a href="https://github.com/jzaefferer/grunt-css">grunt-css</a>)</li>
+</ul>
+<p>Here&#39;s the basic configuration:
+
+</p>
+<pre><code class="js">css: {
+  'publish/css/style.css':<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"sqbracket"</span>></span> [ 'css/style.css' ]<span class="tag">&lt;/<span class="title">span</span>></span>
+},</code></pre>
+<p>Just as the concat / min task, the config subprop is used as the
+destination files, any expanded files in the config subprob value will
+be optimized and concat&#39;d into the destination file.
+
+</p>
+<p>The <code>css</code> task works pretty much the same as grunt&#39;s min task. The task
+target is the destination, data is an array of glob patterns. These
+files are concataned and run through <a href="http://requirejs.org/docs/optimization.html#onecss">requirejs
+optimizer</a> to handle
+@import inlines in CSS files.
+
+</p>
+<h2>Helpers</h2>
+<h3>mincss</h3>
+<p><code>mincss</code> basic utility to concat CSS files and run them through
+<a href="https://github.com/GoalSmashers/clean-css">cleanCSS</a>, might opt to use
+[<a href="https://github.com/jzaefferer/grunt-css">https://github.com/jzaefferer/grunt-css</a>] plugin. Takes an array of
+files to concat and minified. The minificaton only happens if the
+<code>options.nocompress</code> value is not set to <code>true</code> (default is <code>false</code>)
+
+</p>
+<pre><code class="js"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>var<span class="tag">&lt;/<span class="title">span</span>></span> css = task.helper(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'mincss'<span class="tag">&lt;/<span class="title">span</span>></span>, files, options));</code></pre>
+<h3>rjs:optimize:css</h3>
+<p><code>rjs:optimize:css</code> is an helper using rjs to optimize a single file,
+mainly to properly import multi-level of @import statements, which can be
+tricky with all the url rewrites.
+
+</p>
+<p>file     - Path to the css file to optimize
+options  - (optional) rjs configuration
+cb       - callback function to call on completion
+
+</p>
+<pre><code class="js">task.helper(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'rjs:optimize:css'<span class="tag">&lt;/<span class="title">span</span>></span>, cssIn, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>this<span class="tag">&lt;/<span class="title">span</span>></span>.<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>async<span class="tag">&lt;/<span class="title">span</span>></span>());</code></pre>
+
+        <hr>
+<h1><a id="min" href="#min">Task - min</a></h1>
+<p><a href="https://github.com/cowboy/grunt/blob/master/docs/task_min.md#readme">Read the grunt documentation on min built-in
+task</a>
+
+</p>
+<p>Min is another built-in grunt task that allows you to easily compress
+JavaScript files through <a href="https://github.com/mishoo/UglifyJS/">UglifyJS</a>.
+
+</p>
+<pre><code class="js"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>min<span class="tag">&lt;/<span class="title">span</span>></span>: {
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'publish/js/scripts.js'<span class="tag">&lt;/<span class="title">span</span>></span>: [ <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'intermediate/js/scripts.js'<span class="tag">&lt;/<span class="title">span</span>></span> ]
+},</code></pre>
+<p>This is a <strong>really</strong> basic minify configuration, there&#39;s much more
+built-in in the grunt min task, like <a href="https://github.com/cowboy/grunt/blob/master/docs/task_min.md#banner-comments">banner comments</a>, <a href="https://github.com/cowboy/grunt/blob/master/docs/task_min.md#specifying-uglifyjs-options">specifying
+uglifyjs options</a>, and <a href="https://github.com/cowboy/grunt/blob/master/docs/task_min.md#minifying-while-concatenating-files">minifying while concatenating files</a>. You&#39;re
+encouraged to edit this basic minify configuration to match your very
+own setup.
+
+</p>
+
+        <hr>
+<h1><a id="mkdirs" href="#mkdirs">Task - mkdirs</a></h1>
+<p>The mkdirs task is working in tandem with the clean one, and creates the
+necessary build dirs.
+
+</p>
+<pre><code class="js">// the staging directory used during the process
+staging: 'intermediate/',
+
+// final build output
+output: 'publish/',
+
+// filter any files matching one of the below pattern during mkdirs task
+exclude: 'build/** node_modules/** grunt.js package.json *.md'.split(' '),
+
+mkdirs: {
+  staging: '<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"tag"</span>></span>&amp;lt;<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"title"</span>></span>config:exclude<span class="tag">&lt;/<span class="title">span</span>></span>><span class="tag">&lt;/<span class="title">span</span>></span>',
+  output: '<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"tag"</span>></span>&amp;lt;<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"title"</span>></span>config:exclude<span class="tag">&lt;/<span class="title">span</span>></span>><span class="tag">&lt;/<span class="title">span</span>></span>'
+},</code></pre>
+<p>Just as the clean task, config subprop are used to create the
+directories. A basic mapping is done in configuration to get back the
+directory values, (eg. <code>config(task.target) --&gt; config(&#39;staging&#39;)</code>).
+
+</p>
+<p>Values for each is an array of files to filter, eg. they&#39;ll not be
+copied over during the process. These are
+<a href="https://github.com/isaacs/minimatch#readme">minimatch</a> patterns.
+
+</p>
+<h2>Helpers</h2>
+<h3>mkdirs</h3>
+<p><code>mkdir</code> helper is a basic wrapper for
+<a href="https://github.com/substack/node-mkdirp#readme">node-mkdirp</a>.  Takes a
+<code>directory</code> path to create, process is async if a valid callback
+is passed in, otherwise <code>mkdirp.sync(dir)</code> is used.
+
+</p>
+<pre><code class="js">&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">title</span>"><span class="id">task</span>&lt;/<span class="id">span</span>>.<span class="id">helper</span>('<span class="id">mkdir</span>', <span class="id">dir</span>, <span class="id">cb</span>);</span></code></pre>
+<h3>copy</h3>
+<p><code>copy</code> helper uses <a href="https://github.com/AvianFlu/ncp#readme">ncp</a>
+and <a href="https://github.com/isaacs/minimatch#readme">minimatch</a> to copy
+the files under the current directory to the specified <code>dir</code>,
+optionnaly ignoring files specified by the <code>options.ignore</code> property.
+
+</p>
+<p><code>options.ignore</code> can be a String of space delimited glob patterns,
+an Array of glob patterns, or a filter function.
+
+</p>
+<p>This helper is asynchronous only. Paths are always relative to
+current working directory.
+
+</p>
+<pre><code class="js">task.helper(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'copy'<span class="tag">&lt;/<span class="title">span</span>></span>, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>source<span class="tag">&lt;/<span class="title">span</span>></span>, dest, opts, function(e) {
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>if<span class="tag">&lt;/<span class="title">span</span>></span>(e) <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>log<span class="tag">&lt;/<span class="title">span</span>></span>.<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>error<span class="tag">&lt;/<span class="title">span</span>></span>(e.stack || e.message);
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>else<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>log<span class="tag">&lt;/<span class="title">span</span>></span>.ok();
+  cb(!e);
+});</code></pre>
+<ul>
+<li>source     - Path to the source directory</li>
+<li>dest       - where the files will be copied to</li>
+<li>opts       - (optional) An Hash object with an <code>ignore</code> property</li>
+<li>cb         - callback to call on completion</li>
+</ul>
+
+        <hr>
+<h1><a id="rev" href="#rev">Task - rev</a></h1>
+<p>The rev task is a really simple one. Its role is to read the content of
+a given file, generate a hash and prepend that hash to the original
+filename.
+
+</p>
+<pre><code class="js"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>rev:<span class="tag">&lt;/<span class="title">span</span>></span> {
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>js:<span class="tag">&lt;/<span class="title">span</span>></span> [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'publish/js/*.js'<span class="tag">&lt;/<span class="title">span</span>></span>],
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>css:<span class="tag">&lt;/<span class="title">span</span>></span> [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'publish/css/*.css'<span class="tag">&lt;/<span class="title">span</span>></span>],
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"method"</span>></span>img:<span class="tag">&lt;/<span class="title">span</span>></span> [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'publish/img/*'<span class="tag">&lt;/<span class="title">span</span>></span>]
+},</code></pre>
+<p>From this configuration example, the rev task will iterate through each
+expanded files for js / css / img subtasks and generate a hash from
+their content and rename each file accordingly.
+
+</p>
+<p>A <code>scripts.js</code> file will be renamed into something like
+<code>12345678.scripts.js</code>. The hash will change only when the content
+changes.
+
+</p>
+<h2>Helpers</h2>
+<h3>hash</h3>
+<p><code>hash</code> helper takes care of files revving, by renaming any files in the
+given <code>files</code> pattern(s), with passed in <code>options</code>.
+
+</p>
+<pre><code class="js">task.helper(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'hash'<span class="tag">&lt;/<span class="title">span</span>></span>, files, options);</code></pre>
+<ul>
+<li>files      - String or Array of glob pattern</li>
+<li>options    - (optional) An Hash object where:<ul>
+<li>cwd     - Base directory to work from, glob patterns are
+prepended to this path.</li>
+</ul>
+</li>
+</ul>
+<h3>md5</h3>
+<p><code>md5</code> helper is a basic wrapper around crypto.createHash, with given
+<code>algorithm</code> and <code>encoding</code>. Both are optional and defaults to <code>md5</code> and
+<code>hex</code> values.
+
+</p>
+<pre><code class="js">task.helper(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'md5'<span class="tag">&lt;/<span class="title">span</span>></span>, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>file<span class="tag">&lt;/<span class="title">span</span>></span>, algorithm, encoding);</code></pre>
+
+        <hr>
+<h1><a id="serve" href="#serve">Task - serve</a></h1>
+<p>Serve is a utility task that will spawn a local http server on top of
+generated build dirs, intermediate/ and publish/.
+
+</p>
+<p>intermediate/ will basically include any files that were concat&#39;d, but
+not minified / versioned. publish/ is the final build results.
+
+</p>
+<pre><code class="js"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"tag"</span>></span>serve<span class="tag">&lt;/<span class="title">span</span>></span>: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"rules"</span>></span>{
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"rule"</span>></span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"attribute"</span>></span>intermediate<span class="tag">&lt;/<span class="title">span</span>></span>:<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"value"</span>></span> { port: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>3000<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;/<span class="title">span</span>></span>}<span class="tag">&lt;/<span class="title">span</span>></span><span class="tag">&lt;/<span class="title">span</span>></span>,
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"tag"</span>></span>publish<span class="tag">&lt;/<span class="title">span</span>></span>: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"rules"</span>></span>{ <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"rule"</span>></span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"attribute"</span>></span>port<span class="tag">&lt;/<span class="title">span</span>></span>:<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"value"</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>3001<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;/<span class="title">span</span>></span>}<span class="tag">&lt;/<span class="title">span</span>></span><span class="tag">&lt;/<span class="title">span</span>></span>
+},</code></pre>
+<p>The only configurable option here is the port, but other relevant config
+may be added soon (logs format, hostname, should serve dirs as well,  etc.)
+
+</p>
+<h2>Helpers</h2>
+<blockquote>
+<p>todo
+</p>
+</blockquote>
+
+        <hr>
+<h1><a id="usemin" href="#usemin">Task - usemin</a></h1>
+<p>Replaces references ton non-optimized scripts / stylesheets into a
+set of html files (or any template / views).
+
+</p>
+<p>Usemin task is probably the trickiest one. It&#39;ll replace references to
+non minified scripts / stylesheets to their optimized / versioned
+equivalent.
+
+</p>
+<pre><code class="js"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"tag"</span>></span>usemin<span class="tag">&lt;/<span class="title">span</span>></span>: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"rules"</span>></span>{
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"rule"</span>></span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"attribute"</span>></span>files<span class="tag">&lt;/<span class="title">span</span>></span>:<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"value"</span>></span> [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"string"</span>></span>'publish/*.html'<span class="tag">&lt;/<span class="title">span</span>></span>]
+<span class="tag">&lt;/<span class="title">span</span>></span>}<span class="tag">&lt;/<span class="title">span</span>></span><span class="tag">&lt;/<span class="title">span</span>></span></code></pre>
+<p>In this configuration, it&#39;ll handle the replacement for any html files
+located under the publish directory.
+
+</p>
+<p>Right now the replacement is based on the filename parsed from content
+and the files present in according directory (eg. looking up matching
+revved filename into <code>output/</code> dir to figure out the hash generated).
+
+</p>
+<p>If you&#39;d like a little bit more flexibility, you can use &quot;directives&quot;, some
+special kind of html comments surrounding the part of html we want to replace
+(original idea from <a href="https://github.com/necolas">@necolas</a> in:
+<a href="https://github.com/h5bp/html5-boilerplate/issues/831">#831</a>)
+
+</p>
+<p>There is no need for JSDOM for this, this is plain regexp (JSDOM required
+for data-build attributes).
+
+</p>
+<p>Ex:
+
+</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>&amp;lt;!-- build:css css/site.css --><span class="tag">&lt;/<span class="title">span</span>></span>
+<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"tag"</span>></span>&amp;lt;<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"title"</span>></span>link<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"attribute"</span>></span>rel<span class="tag">&lt;/<span class="title">span</span>></span>=<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"value"</span>></span>"stylesheet"<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"attribute"</span>></span>href<span class="tag">&lt;/<span class="title">span</span>></span>=<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"value"</span>></span>"css/style.css"<span class="tag">&lt;/<span class="title">span</span>></span>><span class="tag">&lt;/<span class="title">span</span>></span>
+<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>&amp;lt;!-- endbuild --><span class="tag">&lt;/<span class="title">span</span>></span></code></pre>
+<p>Results in:
+
+</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"tag"</span>></span>&amp;lt;<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"title"</span>></span>link<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"attribute"</span>></span>rel<span class="tag">&lt;/<span class="title">span</span>></span>=<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"value"</span>></span>"stylesheet"<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"attribute"</span>></span>href<span class="tag">&lt;/<span class="title">span</span>></span>=<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"value"</span>></span>"css/site.css"<span class="tag">&lt;/<span class="title">span</span>></span>><span class="tag">&lt;/<span class="title">span</span>></span></code></pre>
+<p>A directive is composed of the following part:
+
+</p>
+<pre><code class="html"><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>&amp;lt;!-- build:&amp;lt;target> &amp;lt;output> --><span class="tag">&lt;/<span class="title">span</span>></span>
+... block ...
+<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>&amp;lt;!-- endbuild --><span class="tag">&lt;/<span class="title">span</span>></span></code></pre>
+<ul>
+<li><p><code>&lt;target&gt;</code>
+A known target is required (<code>css</code> or <code>js</code>). It&#39;ll namely allow you
+to replace the html &quot;block&quot; with appropriate tag (eg. a <code>&lt;link&gt;</code> for
+stylesheets, a <code>&lt;script&gt;</code> for js files, the task won&#39;t guess this from markup
+for you)</p>
+</li>
+<li><p><code>&lt;output&gt;</code>
+Path to the optimized asset. The html &quot;block&quot; is replaced with
+according tag (depending on <code>&lt;target&gt;</code>) while replacing the src or href
+attribute with the <code>&lt;output&gt;</code> value.</p>
+</li>
+<li><p><code>... block ...</code>
+Anything inside the <code>&lt;!-- build.. --&gt;</code> and <code>&lt;!-- endbuild --&gt;</code> is replaced
+depending on <code>&lt;target&gt;</code> and <code>&lt;output&gt;</code> values.</p>
+</li>
+</ul>
+<p>The resulting html is then passed through the global replace, looking up
+matching revved filename in the output directory (defaults to <code>publish/</code>),
+replacing references to their hash-prepended version.
+
+</p>
+<p>This &quot;directives&quot; system will provide you a nice level of flexibility, and the
+ability to be very descriptive on what gets replaced and by what.
+</p>
+
+        <hr>
+<h1><a id="dom" href="#dom">Dom</a></h1>
+<p>The <code>dom</code> task is a special task using <code>jsdom</code> to do some nasty thing to
+a bunch of html files. The idea is to rely on a set of selectors and
+plugins.
+
+</p>
+<p>These plugins are special jQuery plugins that can use the node api to do
+their task.
+
+</p>
+<p>The following plugins are implemented
+
+</p>
+<ul>
+<li><strong><a href="../link-plugin/">css</a></strong> Relies on @import statement mainly which are inlined (with
+nested path rewrite) to serve a single optimized stylesheet.</li>
+</ul>
+<ul>
+<li><strong><a href="../script-plugin/">js</a></strong> Concats, minify through uglify and serve a single concat&#39;d /
+minified script.</li>
+</ul>
+<p>Each plugin is able to modify the DOM tree to replace references to
+optimized files.
+
+</p>
+<h2>Usage</h2>
+<p>Using the <code>h5bp</code> executable:
+
+</p>
+<pre><code><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"title"</span>></span>h5bp<span class="tag">&lt;/<span class="title">span</span>></span> dom</code></pre>
+<h2>Configuration</h2>
+<p>Minimal, most of the configuration is derived from html markup, by using
+special semantics on <code>data-*</code> attributes, probably always namespaced to
+<code>data-build-*</code>.
+
+</p>
+<pre><code class="js">var h5bp = require(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'node-build-script');<span class="tag">&lt;/<span class="title">span</span>></span>
+
+module.exports = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>function<span class="tag">&lt;/<span class="title">span</span>></span>(grunt) {
+
+  grunt.initConfig({
+      ...,
+
+      dom: {
+          files: [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'*.html', 'views/**/*.html'],<span class="tag">&lt;/<span class="title">span</span>></span>
+          <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'script[data-build]'    : h5bp.plugins.script,<span class="tag">&lt;/<span class="title">span</span>></span>
+          <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'link'                  : h5bp.plugins.link,<span class="tag">&lt;/<span class="title">span</span>></span>
+          <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'img'                   : h5bp.plugins.img,<span class="tag">&lt;/<span class="title">span</span>></span>
+          <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'script, link, img'     : h5bp.plugins.rev<span class="tag">&lt;/<span class="title">span</span>></span>
+      },
+
+      ...
+  });
+
+};</code></pre>
+<ul>
+<li><strong>files</strong>: list of glob pattern to expand. The files in the resulted
+array are then passed through each of the processors.</li>
+</ul>
+<ul>
+<li><strong>script, link, img</strong> a list of selectors may be associated with
+plugins that will be executed with the set of matching DOM elements.</li>
+</ul>
+<p>selectors / plugins are run sequentially, and the DOM tree is modified
+all allong the way to the last selector / plugin couple. Read that
+the selectors result depends on the modified DOM tree from previous
+processors.
+
+</p>
+<p>One can use a totally different set of selectors, with custom plugin,
+ex.
+
+</p>
+<ul>
+<li>just <code>script</code>, <code>link</code> and <code>img</code></li>
+<li>or <code>.js-plugin</code></li>
+<li>or <code>script[src*=&quot;jquery&quot;]</code> or <code>script[src*=backbone]</code></li>
+<li><code>script[data-main]</code> --&gt; triggers a r.js build</li>
+</ul>
+<h2>Plugin API</h2>
+<p>Plugins are valid commonjs package and should expose a single function,
+a jQuery like plugin that will be run with the associated set of DOM
+elements for a given selector.
+
+</p>
+<p>Plugins needs to export a few things:
+
+</p>
+<ul>
+<li><strong>name</strong> is the plugin name and used to extend the jQuery namespace,
+eg its prototype <code>$.fn</code></li>
+<li><strong>defaults</strong> a Hash object of default configuration value.</li>
+<li><strong>handler</strong> the main function, that is the jQuery plugin
+implementation.</li>
+</ul>
+<p>Here&#39;s the <code>link</code> plugin:
+
+</p>
+<pre><code class="javascript">var plugin = module.exports;
+
+// give it a name
+plugin.name = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'link'<span class="tag">&lt;/<span class="title">span</span>></span>;
+
+// give it some defaults
+plugin.defaults = {
+  dir: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>process<span class="tag">&lt;/<span class="title">span</span>></span>.cwd(),
+  output: 'css/style.min.css'
+};
+
+// <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>and<span class="tag">&lt;/<span class="title">span</span>></span> the main plugin handler, mixed <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> jsdom's jquery as $.fn.pluginame
+plugin.handler = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>function<span class="tag">&lt;/<span class="title">span</span>></span> link($, options, cb) {
+  options = options || {};
+
+  // size <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>of<span class="tag">&lt;/<span class="title">span</span>></span> the passed <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> collection,
+  // used <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> emit `success` <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> last iteration.
+  var ln = this.length;
+
+  // don't act <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> zero-element
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>if<span class="tag">&lt;/<span class="title">span</span>></span>(!ln) {
+    cb();
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>return<span class="tag">&lt;/<span class="title">span</span>></span> this;
+  }
+
+  // default <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>configuration<span class="tag">&lt;/<span class="title">span</span>></span> here..
+  options.whatev = options.whatev || <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'whatev'<span class="tag">&lt;/<span class="title">span</span>></span>;
+
+  // will hold the concatenated script,
+  // <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> the order they appear <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> the collection
+  var files = [];
+
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>return<span class="tag">&lt;/<span class="title">span</span>></span> this.each(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>function<span class="tag">&lt;/<span class="title">span</span>></span>(i, target) {
+    var el = $(this); // === $(target)
+
+    var src = el.attr(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'href'<span class="tag">&lt;/<span class="title">span</span>></span>),
+      last = ln === (i + <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>1<span class="tag">&lt;/<span class="title">span</span>></span>),
+      <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>file<span class="tag">&lt;/<span class="title">span</span>></span> = path.resolve(options.dir, src);
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>if<span class="tag">&lt;/<span class="title">span</span>></span>(!path.existsSync(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>file<span class="tag">&lt;/<span class="title">span</span>></span>)) <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>return<span class="tag">&lt;/<span class="title">span</span>></span> cb(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>new<span class="tag">&lt;/<span class="title">span</span>></span> Error('no ' + src));
+    files = files.concat(fs.readFileSync(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>file<span class="tag">&lt;/<span class="title">span</span>></span>, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'utf8'<span class="tag">&lt;/<span class="title">span</span>></span>));
+
+    // remove dom element from dom tree, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>when<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>not<span class="tag">&lt;/<span class="title">span</span>></span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> last <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>loop<span class="tag">&lt;/<span class="title">span</span>></span>
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>if<span class="tag">&lt;/<span class="title">span</span>></span>(!last) <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>return<span class="tag">&lt;/<span class="title">span</span>></span> el.remove();
+
+    var output = el.data('build') || options.output;
+    // update dom tree accordingly
+    el.attr(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'href'<span class="tag">&lt;/<span class="title">span</span>></span>, output);
+
+    // finally, write <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> destination output
+    log.writeln((' › writing <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> output ' + output).bold);
+    task.helper('mkdir', path.dirname(path.resolve(output)));
+    fs.writeFile(output, task.helper('mincss', files), cb);
+  });
+};</code></pre>
+<p>One could think do to some crazy stuff on their html files, and use a
+jQuery like api mixed here and there with the node api to handle all
+sort of things with a bunch of custom plugins, on an arbitrary set of
+selectors.
+</p>
+
+        <hr>
+<h1><a id="link-plugin" href="#link-plugin">Plugin - link</a></h1>
+<p>This plugin runs, in the default setup, with the following
+configuration:
+
+</p>
+<pre><code class="js">dom: {
+  files                   : [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'*.html'],<span class="tag">&lt;/<span class="title">span</span>></span>
+  options                 : {
+    dir: process.cwd(),
+    output: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'css/style.min.css'<span class="tag">&lt;/<span class="title">span</span>></span>
+  },
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'script[data-build]'    : h5bp.plugins.link<span class="tag">&lt;/<span class="title">span</span>></span>
+},</code></pre>
+<p>It uses <a href="https://github.com/jrburke/r.js">r.js</a> to optimize a single css
+file, and properly handle the <code>@import</code> statements you might have.
+
+</p>
+<ul>
+<li><a href="http://requirejs.org/docs/optimization.html#onecss">http://requirejs.org/docs/optimization.html#onecss</a></li>
+</ul>
+<p>Default optimization options for rjs are as follows:
+
+</p>
+<ul>
+<li><code>optimizeCss=&#39;standard.keepLines&#39;</code></li>
+</ul>
+<p>The output is based on <code>data-build</code> from the <code>&lt;link&gt;</code> tag, or defaults
+to <code>css/style.min.css</code>.
+
+</p>
+<h2>Options</h2>
+<ul>
+<li><strong>dir</strong> base directory to work from</li>
+</ul>
+<ul>
+<li><strong>output</strong> default output destination, if not defined through
+<code>data-build</code>.</li>
+</ul>
+<ul>
+<li><strong>rjs</strong> requirejs css optimization option.</li>
+</ul>
+
+        <hr>
+<h1><a id="rev-plugin" href="#rev-plugin">Plugin - rev</a></h1>
+<h2>Options</h2>
+
+        <hr>
+<h1><a id="script-plugin" href="#script-plugin">Plugin - script</a></h1>
+<p>This plugin runs, in the default setup, with the following
+configuration:
+
+</p>
+<pre><code class="js">dom: {
+  files                   : [<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'*.html'],<span class="tag">&lt;/<span class="title">span</span>></span>
+  options                 : {
+    dir: process.cwd(),
+    output: <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'js/bundle.min.js'<span class="tag">&lt;/<span class="title">span</span>></span>
+  },
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>'script[data-build]'    : h5bp.plugins.script<span class="tag">&lt;/<span class="title">span</span>></span>
+},</code></pre>
+<p>Does the following:
+
+</p>
+<ol>
+<li>Iterates through each script in order and concats them</li>
+<li>On the very last iteration (last script tags in jQuery collection),
+concat&#39;d files are minified.</li>
+<li>The single minified content string is written to <code>options.output</code> or
+to the <code>data-build</code> attribute of last script tag.</li>
+<li>Every script in the collection but the last one get removed. Last one
+is updated so that the src attribute is <code>src=path/to/output</code></li>
+</ol>
+<h2>Options</h2>
+<ul>
+<li><strong>dir</strong> base directory to work from</li>
+</ul>
+<ul>
+<li><strong>output</strong> default output destination, if not defined through
+<code>data-build</code>.</li>
+</ul>
+
+        <hr>
+<h1><a id="test" href="#test">Tests</a></h1>
+<p>A significant amount of efforts have been put into setting up a basic test suite
+to ensure everything is working properly.
+
+</p>
+<p>As of now, the <code>default</code> and <code>usemin</code> task are tested.
+
+</p>
+<p><code>default</code> is the global task that runs the following tasks:
+
+</p>
+<pre><code class="js">&lt;span <span class="class"><span class="keyword">class</span>="<span class="id">title</span>"><span class="id">grunt</span>&lt;/<span class="id">span</span>>.<span class="id">registerTask</span>('<span class="id">default</span>',&lt;<span class="id">span</span> <span class="id">class</span>="<span class="id">string</span>"> '<span class="id">intro</span> <span class="id">clean</span> <span class="id">mkdirs</span> <span class="id">concat</span> <span class="id">css</span> <span class="id">min</span> <span class="id">rev</span> <span class="id">usemin</span> <span class="id">manifest</span>'&lt;/<span class="id">span</span>>);</span></code></pre>
+<p>Assertions on <code>default</code> task output are a good sanity check. Each tasks is then
+tested individually (now the case of <code>usemin</code>)
+
+</p>
+<p>This page will give a walkthrough on how to setup basic tests, how to run them
+and how to write new ones.
+
+</p>
+<h2>npm pretest</h2>
+<p>Tests are done on top of
+<a href="https://github.com/h5bp/html5-boilerplate/">h5bp/html5-boilerplate</a> repository.
+The original repository is setup as a submodule at the <code>test/h5bp</code> location.
+
+</p>
+<p>Running <code>npm test</code> will trigger the <code>pretest</code> npm script, and then execute the
+<code>test/index.js</code> file:
+
+</p>
+<pre><code class="js">"pretest": "git submodule update --init"</code></pre>
+<h2>How the tests work</h2>
+<p>Testing a build script is somewhat tricky. Tests here aren&#39;t really unit tests,
+they simply run a given grunt command, and run few basic assertions on the script output.
+
+</p>
+<p>No test framework are used during the process, they require nothing but node.js.
+It&#39;ll hopefully make them easier to understand for anyone that is familiar with
+node and not a given chosen test framework.
+
+</p>
+<p>Each assertion file is using a grunt helper to spawn a new process, executing a grunt command,
+to finally run a few assertions on top of the output directory.
+
+</p>
+<h2>Test structure</h2>
+<pre><code>* test/
+  * fixtures
+    * default/
+      * expected<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.html<span class="tag">&lt;/<span class="title">span</span>></span>
+      * grunt<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.js<span class="tag">&lt;/<span class="title">span</span>></span>
+      * usemin<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.expected<span class="tag">&lt;/<span class="title">span</span>></span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.html<span class="tag">&lt;/<span class="title">span</span>></span>
+      * usemin<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.html<span class="tag">&lt;/<span class="title">span</span>></span>
+    * ...
+    * usemin/
+      * expected<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.html<span class="tag">&lt;/<span class="title">span</span>></span>
+      * grunt<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.js<span class="tag">&lt;/<span class="title">span</span>></span>
+      * index<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.html<span class="tag">&lt;/<span class="title">span</span>></span>
+
+  * h5bp/
+    * css/
+    * js/
+    * index<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.html<span class="tag">&lt;/<span class="title">span</span>></span>
+    * <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"number"</span>></span>404<span class="tag">&lt;/<span class="title">span</span>></span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.html<span class="tag">&lt;/<span class="title">span</span>></span>
+    * ...
+
+  * helpers/
+    * index<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.js<span class="tag">&lt;/<span class="title">span</span>></span>
+
+  * tasks/
+    * usemin/
+      * index<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"preprocessor"</span>></span>.js<span class="tag">&lt;/<span class="title">span</span>></span></code></pre>
+<ul>
+<li><strong>test/fixtures</strong>
+Holds the fixtures file. If necessary test scripts will copy
+files from fixtures to the test directory (<code>.test</code>) and have grunt operate on
+top of that. This may include custom gruntfile and specific html files, testing
+out the whole script or a specific feature. This directory usually include
+subdirectories named after the task they meant to be used with.</li>
+</ul>
+<ul>
+<li><strong>test/h5bp</strong>
+this is the h5bp submodule. Running <code>git submodule update
+--init</code> will make sure everything is here. Relatedly, this command is run
+automatically before <code>npm test</code>.</li>
+</ul>
+<ul>
+<li><strong>test/helpers</strong>
+Contains few test helper, see below for further details.</li>
+</ul>
+<ul>
+<li><strong>test/tasks</strong> Like <code>test/fixtures</code>, this directory usually include
+subdirectories named after the task that is tested. Test files in this directory
+are meant to test specific task / feature of the build script. They may be run directly using
+<code>node test/tasks/usemin</code> (or any other implemented test).</li>
+</ul>
+<h2>Writing a new test</h2>
+<p>Checkout the tests that have been setup, they usually are a good place to look at.
+
+</p>
+<p>Tests are usually done like so:
+
+</p>
+<pre><code class="js">var fs = require('fs'),
+  h5bp = require('../'),
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>assert<span class="tag">&lt;/<span class="title">span</span>></span> = require('<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>assert<span class="tag">&lt;/<span class="title">span</span>></span>'),
+  runner = require('./helpers'),
+  EventEmitter = require('events').EventEmitter;
+
+//
+// Setup the event emitter, an <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>end<span class="tag">&lt;/<span class="title">span</span>></span> event will be emitted <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> grunt completion.
+//
+// Depending <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> grunt's <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>exit<span class="tag">&lt;/<span class="title">span</span>></span> code, test fail <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>or<span class="tag">&lt;/<span class="title">span</span>></span> pass. <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>Then<span class="tag">&lt;/<span class="title">span</span>></span>, further assertions
+// may perform few additional checks.
+//
+var test = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>new<span class="tag">&lt;/<span class="title">span</span>></span> EventEmitter;
+
+//
+// Running tasks serially, tests pass <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>or<span class="tag">&lt;/<span class="title">span</span>></span> fail depending <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> grunt's <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>exit<span class="tag">&lt;/<span class="title">span</span>></span> code.
+//
+
+//
+// `runner.setup` <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>is<span class="tag">&lt;/<span class="title">span</span>></span> mandatory, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>and<span class="tag">&lt;/<span class="title">span</span>></span> deal <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>with<span class="tag">&lt;/<span class="title">span</span>></span> directory copy from `test/h5bp` <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>to<span class="tag">&lt;/<span class="title">span</span>></span> `.test`.
+//
+//  The tests <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>and<span class="tag">&lt;/<span class="title">span</span>></span> build <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>process<span class="tag">&lt;/<span class="title">span</span>></span> happens <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>in<span class="tag">&lt;/<span class="title">span</span>></span> this `.test` directory.
+//
+runner.setup(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>function<span class="tag">&lt;/<span class="title">span</span>></span>(err) {
+
+  //
+  // optional fixtures copy test. Copy may copy a single <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>or<span class="tag">&lt;/<span class="title">span</span>></span> a set <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>of<span class="tag">&lt;/<span class="title">span</span>></span> files.
+  //
+  // Second argument <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>is<span class="tag">&lt;/<span class="title">span</span>></span> the destination, which may be a <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>file<span class="tag">&lt;/<span class="title">span</span>></span> (<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>when<span class="tag">&lt;/<span class="title">span</span>></span> copying a single <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>file<span class="tag">&lt;/<span class="title">span</span>></span>)
+  // <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>or<span class="tag">&lt;/<span class="title">span</span>></span> a directory (`.test`).
+  //
+  runner.copy('test/fixtures/default/usemin.html', '.test/usemin.html', <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>function<span class="tag">&lt;/<span class="title">span</span>></span>(err) {
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>if<span class="tag">&lt;/<span class="title">span</span>></span>(err) throw err;
+
+    // run the default task
+    runner('.test', test)('default');
+  });
+});
+
+// global check <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span> index.html
+test.<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span>('<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>end<span class="tag">&lt;/<span class="title">span</span>></span>', <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>function<span class="tag">&lt;/<span class="title">span</span>></span>(err) {
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>if<span class="tag">&lt;/<span class="title">span</span>></span>(err) throw err;
+  var result = fs.readFileSync('.test/index.html', <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'utf8'<span class="tag">&lt;/<span class="title">span</span>></span>),
+    expected = fs.readFileSync('test/fixtures/default/expected.html', <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'utf8'<span class="tag">&lt;/<span class="title">span</span>></span>);
+
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>assert<span class="tag">&lt;/<span class="title">span</span>></span>.equal(expected.trim(), result.trim());
+});
+
+//
+// check the usemin version, eg. one using
+//
+//    &amp;lt;!<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"comment"</span>></span>-- build:js path/to/script.js --><span class="tag">&lt;/<span class="title">span</span>></span>
+//
+// kind <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>of<span class="tag">&lt;/<span class="title">span</span>></span> surrouding html comment.
+//
+test.<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>on<span class="tag">&lt;/<span class="title">span</span>></span>('<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>end<span class="tag">&lt;/<span class="title">span</span>></span>', <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>function<span class="tag">&lt;/<span class="title">span</span>></span>(err) {
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>if<span class="tag">&lt;/<span class="title">span</span>></span>(err) throw err;
+  var result = fs.readFileSync('.test/usemin.html', <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'utf8'<span class="tag">&lt;/<span class="title">span</span>></span>),
+    expected = fs.readFileSync('test/fixtures/default/usemin.expected.html', <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"literal"</span>></span>'utf8'<span class="tag">&lt;/<span class="title">span</span>></span>);
+
+  <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"keyword"</span>></span>assert<span class="tag">&lt;/<span class="title">span</span>></span>.equal(expected.trim(), result.trim());
+});</code></pre>
+
+
+      <hr>
+      <p>
+        This documentation is based on the layout of the
+        <a href="https://github.com/documentcloud/backbone/">Backbone.js</a>
+        documentation, which is released under the
+        <a href="https://github.com/documentcloud/backbone/blob/master/LICENSE">MIT license</a>.
+      </p>
+
+    </section>
+
+  </div>
+  <script>
+    (function($) {
+      var themes = $('.themes a'),
+        each = themes.each ? 'each' : 'forEach',
+        link = $('link')[2];
+
+      themes[each](function(val, i) {
+        var swap = typeof val === 'number',
+          el = swap ? i : val,
+          theme = (el.href.match(/#([\w]+)/) || [])[1];
+
+        if(swap) i = val, val = el;
+        if(!theme) return;
+        el.addEventListener('click', function(e) {
+          link.href = link.href.replace(/[^\/]+.css$/, theme + '.css');
+        });
+      });
+    })(this.$, this);
+  </script>
+</body>
+</html>
+
