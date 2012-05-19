@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 		if(!cb) { cb = options; options = {}; }
 		options.baseUrl = './';
 		options.appDir = 'js';
-		options.dir = grunt.config('output')+options.appDir;
+		options.dir = grunt.config('output') + options.appDir;
 		options.modules = [{
 			name: file
 		}];

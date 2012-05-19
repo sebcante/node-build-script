@@ -37,12 +37,12 @@ module.exports = function(grunt) {
 
 
     grunt.helper('copy', source, target, ignores, function(e) {
-      if(e) grunt.log.error(e.stack || e.message);
-      else grunt.log.ok(source + ' -> ' + target);
+      if(e) return cb(e);
 
+      grunt.log.ok(source + ' -> ' + target);
       // Once copy done, ensure the current working directory is the intermediate one.
       grunt.file.setBase(grunt.config('staging'));
-      cb(!e);
+      cb();
     });
   });
 
@@ -60,9 +60,10 @@ module.exports = function(grunt) {
     var ignores = ['.gitignore', '.ignore', '.buildignore'];
 
     grunt.task.helper('copy', config.staging, config.output, ignores, function(e) {
-      if(e) grunt.log.error(e.stack || e.message);
-      else grunt.log.ok(path.resolve(config.staging) + ' -> ' + path.resolve(config.output));
-      cb(!e);
+      if(e) return cb(e);
+
+      grunt.log.ok(path.resolve(config.staging) + ' -> ' + path.resolve(config.output));
+      cb();
     });
   });
 
@@ -129,8 +130,7 @@ module.exports = function(grunt) {
       }
 
       grunt.log.error('Oh snap >> ' + msg);
-      grunt.log.error(e);
-      return cb(false);
+      return cb(e);
     }}
 
     var type = typeof dest !== 'string' ? 'stream' :

@@ -40,20 +40,9 @@ module.exports = function(grunt) {
       return !!~jpegs.indexOf(path.extname(file).toLowerCase());
     });
 
-    var remains = 2;
     grunt.helper('optipng', pngfiles, grunt.config('optipng'), function(err) {
-      if(err) {
-        grunt.log.error(err);
-        return cb(false);
-      }
-
-      grunt.helper('jpegtran', jpgfiles, grunt.config('jpegtran'), function(err) {
-        if(err) {
-          grunt.log.error(err);
-          return cb(false);
-        }
-        cb();
-      });
+      if(err) return cb(err);
+      grunt.helper('jpegtran', jpgfiles, grunt.config('jpegtran'), cb);
     });
   });
 
@@ -75,8 +64,11 @@ module.exports = function(grunt) {
       optipng.stdout.pipe(process.stdout);
       optipng.stderr.pipe(process.stderr);
       optipng.on('exit', function(code) {
-        if(code) grunt.warn('optipng exited unexpectedly with exit code ' + code + '.', code);
-        cb();
+        if(!code) return cb();
+
+        var err = new Error('optipng exited unexpectedly with exit code ' + code);
+        err.code = code;
+        cb(err);
       });
     });
   });
@@ -100,7 +92,8 @@ module.exports = function(grunt) {
         jpegtran.stderr.pipe(process.stderr);
 
         jpegtran.on('exit', function(code) {
-          if(code) return grunt.warn('jpgtran exited unexpectedly with exit code ' + code + '.', code);
+          if(code) return cb(new Error('jpgtran exited with code ' + code));
+
           // output some size info about the file
           grunt.helper('min_max_stat', 'jpgtmp.jpg', file);
           // copy the temporary optimized jpg to original file

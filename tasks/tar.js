@@ -29,12 +29,11 @@ module.exports = function(grunt) {
 
     if(!input) grunt.log.error('tar: No input value, please specify one.');
     if(!output) grunt.log.error('tar: No output value, please specify one.');
-    if(!input || !output) return cb(false);
+    if(!input || !output) return cb(new Error('Either input or output is missing'));
 
     // correct extension?
     if(!(/tar|tgz/).test(path.extname(output))) {
-      grunt.log.error('tar: ' + output + ' is not a valid destination. Must ends with .tar or .tgz');
-      return cb(false);
+      return cb(new Error('tar: ' + output + ' is not a valid destination. Must ends with .tar or .tgz'));
     }
 
     grunt.log.write('Creating tarball >> ' + output + ' from ' + input + ' directory...');
@@ -55,8 +54,7 @@ module.exports = function(grunt) {
       }
       // hmm, got error, log and fail
       grunt.log.error('Oh snap >> ' + msg);
-      grunt.log.error(e);
-      return cb(false);
+      cb(e);
     }});
   });
 
