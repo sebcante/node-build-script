@@ -21,7 +21,7 @@ module.exports = function(grunt) {
 
     // filter any files matching one of the below pattern during mkdirs task
     // the pattern in the .gitignore file should work too.
-    exclude: 'build/** node_modules/** grunt.js package.json *.md'.split(' '),
+    exclude: 'build/** node_modules/** Gruntfile.js package.json *.md'.split(' '),
 
     mkdirs: {
       staging: '<config:exclude>'

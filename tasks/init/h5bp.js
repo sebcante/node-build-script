@@ -205,7 +205,7 @@ h5bp.end = function end(init, props, cb) {
   init.writePackageJSON('package.json', props);
 
   // special copy and process for the gruntfile
-  init.copy(path.join(__dirname, 'h5bp/gruntfile.js'), 'grunt.js', {
+  init.copy(path.join(__dirname, 'h5bp/Gruntfile.js'), 'Gruntfile.js', {
     process: function(contents) {
       var data = grunt.utils._.extend({}, props, props.gruntfile);
       return grunt.template.process(contents, data, 'init');

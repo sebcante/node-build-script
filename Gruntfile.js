@@ -42,7 +42,7 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     lint: {
-      grunt: ['grunt.js', 'tasks/*.js'],
+      grunt: ['Gruntfile.js', 'tasks/*.js'],
       lib: ['lib/plugins/*.js']
     },
     watch: {

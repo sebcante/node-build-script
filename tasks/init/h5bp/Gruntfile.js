@@ -9,7 +9,7 @@ module.exports = function(grunt) {
     output: '{%= output %}',
     // filter any files matching one of the below pattern during mkdirs task
     // the pattern in the .gitignore file should work too.
-    exclude: '.git* build/** node_modules/** grunt.js package.json *.md'.split(' '),
+    exclude: '.git* build/** node_modules/** Gruntfile.js package.json *.md'.split(' '),
     mkdirs: {
       staging: '<config:exclude>'
     },
@@ -56,7 +56,7 @@ module.exports = function(grunt) {
         'YOUR_NAME; Licensed MIT */'
     },{% } } %}
     lint: {
-      files: ['grunt.js', '{%= js_dir %}/**/*.js', '{%= test_dir %}/**/*.js']
+      files: ['Gruntfile.js', '{%= js_dir %}/**/*.js', '{%= test_dir %}/**/*.js']
     },{% if (dom) { %}
     qunit: {
       files: ['{%= test_dir %}/**/*.html']

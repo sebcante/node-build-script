@@ -79,7 +79,7 @@ helpers.run = function grunt(cmd, options, done) {
 //
 //    rm -rf .test
 //    mkdir .test
-//    cp -r test/h5bp/* test/h5bp/.htaccess test/fixtures/grunt.js .test/
+//    cp -r test/h5bp/* test/h5bp/.htaccess test/fixtures/Grutnfile.js .test/
 //
 // todo: do copy with fstream
 helpers.setup = function setup(o, cb) {
@@ -92,7 +92,7 @@ helpers.setup = function setup(o, cb) {
   var source = o.source || path.join(__dirname, '../h5bp');
 
   // test gruntfile
-  var gruntfile = o.gruntfile || o.grunt || path.join(__dirname, '../fixtures/default/grunt.js');
+  var gruntfile = o.gruntfile || o.grunt || path.join(__dirname, '../fixtures/default/Gruntfile.js');
 
   // ignore handler
   var ignore = o.ignore || function ignore(name) {
@@ -107,12 +107,12 @@ helpers.setup = function setup(o, cb) {
     mkdirp(dest, function(err) {
       if(err) return cb(err);
 
-      // cp -r test/h5bp/* test/fixtures/grunt.js .test/
+      // cp -r test/h5bp/* test/fixtures/Gruntfile.js .test/
       ncp(source, dest, { filter: ignore }, function(err) {
         if(err) return cb(err);
 
-        // specific copy of test/fixtures/grunt.js
-        var ws = fs.createWriteStream(path.join(dest, 'grunt.js')).on('close', cb);
+        // specific copy of test/fixtures/Gruntfile.js
+        var ws = fs.createWriteStream(path.join(dest, 'Gruntfile.js')).on('close', cb);
         fs.createReadStream(gruntfile).pipe(ws);
       });
     });
