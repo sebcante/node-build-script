@@ -16,7 +16,7 @@ module.exports = function(grunt) {
   grunt.registerTask('gendocs', 'Generates docs/index.html from wiki pages', function() {
     var cb = this.async();
 
-    var gendoc = grunt.utils.spawn({
+    var gendoc = grunt.util.spawn({
       cmd: 'grunt', opts: { cwd: path.join(__dirname, 'docs') }
     }, function() {});
 

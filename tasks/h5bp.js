@@ -58,9 +58,9 @@ module.exports = function(grunt) {
     var msg = Object.keys(valid).map(function(key) {
       if(/pre|post/.test(key)) return '';
       return grunt.helper('pad', key, 10) + '# '+ valid[key];
-    }).join(grunt.utils.linefeed);
+    }).join(grunt.util.linefeed);
 
-    var err = new Error(grunt.utils.linefeed + msg);
+    var err = new Error(grunt.util.linefeed + msg);
     err.code = code || 3;
     return err;
   });

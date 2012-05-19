@@ -11,7 +11,7 @@ var util = require('util');
 module.exports = function(grunt) {
   // Output some info on given object, using util.inspect
   grunt.registerHelper('inspect', function(o) {
-    var lf = grunt.utils.linefeed;
+    var lf = grunt.util.linefeed;
     grunt.log.ok(util.inspect(o, false, 4, true));
     return grunt;
   });

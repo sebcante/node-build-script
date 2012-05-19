@@ -12,13 +12,13 @@
 module.exports = function(grunt) {
 
   grunt.registerTask('list-helpers', 'List all grunt registered helpers', function(helper) {
-    var ls = grunt.log.wordlist(Object.keys(grunt.task._helpers), grunt.utils.linefeed);
+    var ls = grunt.log.wordlist(Object.keys(grunt.task._helpers), grunt.util.linefeed);
     if(!helper) return grunt.log.ok(ls);
     grunt.log.subhead(helper + ' source:').ok(grunt.task._helpers[helper]);
   });
 
   grunt.registerTask('list-task', 'List all grunt registered tasks', function(t) {
-    var ls = grunt.log.wordlist(Object.keys(grunt.task._tasks), grunt.utils.linefeed);
+    var ls = grunt.log.wordlist(Object.keys(grunt.task._tasks), grunt.util.linefeed);
     if(!t) return grunt.log.ok(ls);
     grunt.log.subhead(t + ' source:');
     grunt.helper('inspect', grunt.task._tasks[t]);

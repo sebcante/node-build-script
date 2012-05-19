@@ -52,7 +52,7 @@ module.exports = function(grunt) {
     return app;
   });
 
-  // **serve.io** creates and returns a webserver and setup a socket.io instance and 
+  // **serve.io** creates and returns a webserver and setup a socket.io instance and
   // the "inject" middleware. `/socket.io/socket.io.js` and `/relod.js` are
   // then available.
   grunt.registerHelper('serve.io', function serve(config) {
@@ -81,7 +81,7 @@ module.exports = function(grunt) {
   // It's job is to setup a middleware right before the usual static one, and to
   // bypass the response of `.html` file to render them with additional scripts.
   grunt.registerHelper('inject.io', function(config) {
-    grunt.utils._.defaults(config, {
+    grunt.util._.defaults(config, {
       hostname: 'localhost'
     });
 
@@ -90,7 +90,7 @@ module.exports = function(grunt) {
       var filepath = req.url.slice(-1) === '/' ? req.url + 'index.html' : req.url;
 
       // the client-side template
-      var template = grunt.utils._.template(ioScript);
+      var template = grunt.util._.template(ioScript);
 
       // deal with our special socket.io client-side script
       if(path.basename(filepath) === 'reload.js') {

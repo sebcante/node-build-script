@@ -207,7 +207,7 @@ h5bp.end = function end(init, props, cb) {
   // special copy and process for the gruntfile
   init.copy(path.join(__dirname, 'h5bp/Gruntfile.js'), 'Gruntfile.js', {
     process: function(contents) {
-      var data = grunt.utils._.extend({}, props, props.gruntfile);
+      var data = grunt.util._.extend({}, props, props.gruntfile);
       return grunt.template.process(contents, data, 'init');
     }
   });
@@ -225,9 +225,9 @@ h5bp.customPrompt = function() {
     opts = grunt.helper('prompt_for_obj'),
     custom = grunt.file.read(path.join(__dirname, 'h5bp/prompts.txt')).trim(),
     matcher = /^\[\?\]\s?([^\(]+)\(([^\)]+)\)\s*\|\s([\w\d\-_\/]+)/,
-    lf = grunt.utils.linefeed;
+    lf = grunt.util.linefeed;
 
-  var lines = custom.split(grunt.utils.linefeed);
+  var lines = custom.split(grunt.util.linefeed);
 
   // if only one line, then most likely someting wrong happend,
   // probably caused by lf issue, fallback to simple `\n` split and
@@ -332,5 +332,5 @@ h5bp.renames = function(init, props) {
     }
   });
 
-  return this.grunt.utils._.extend({}, init.renames, files);
+  return this.grunt.util._.extend({}, init.renames, files);
 };
