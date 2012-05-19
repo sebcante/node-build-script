@@ -16,7 +16,7 @@
     "requirejs": "~1.0.8",
     "clean-css": "~0.3.2",
     "connect": "~1.8.6",
-    "grunt": "~0.3.8",
+    "grunt": "http://nodeload.github.com/cowboy/grunt/tarball/wip",
     "socket.io": "~0.9.5",
     "request": "~2.9.202",
     "html-minifier": "~0.4.5",
