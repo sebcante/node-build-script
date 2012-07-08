@@ -62,7 +62,7 @@ module.exports = function(grunt) {
     //
     // Eg. for each predefined extensions directives may vary. eg <!--
     // directive --> for html, /** directive **/ for css
-    var blocks = getBlocks(content);
+    var blocks = grunt.helper('usemin:blocks', content);
 
     // handle blocks
     Object.keys(blocks).forEach(function(key) {
@@ -162,67 +162,3 @@ module.exports = function(grunt) {
     });
   });
 };
-
-
-//
-// Helpers: todo, register as grunt helper
-//
-
-// start build pattern --> <!-- build:[target] output -->
-var regbuild = /<!--\s*build:(\w+)\s*(.+)\s*-->/;
-
-// end build pattern -- <!-- endbuild -->
-var regend = /<!--\s*endbuild\s*-->/;
-
-
-//
-// Returns an hash object of all the directives for the given html. Results is
-// of the following form:
-//
-//     {
-//        'css/site.css ':[
-//          '  <!-- build:css css/site.css -->',
-//          '  <link rel="stylesheet" href="css/style.css">',
-//          '  <!-- endbuild -->'
-//        ],
-//        'js/head.js ': [
-//          '  <!-- build:js js/head.js -->',
-//          '  <script src="js/libs/modernizr-2.5.3.min.js"></script>',
-//          '  <!-- endbuild -->'
-//        ],
-//        'js/site.js ': [
-//          '  <!-- build:js js/site.js -->',
-//          '  <script src="js/plugins.js"></script>',
-//          '  <script src="js/script.js"></script>',
-//          '  <!-- endbuild -->'
-//        ]
-//     }
-//
-function getBlocks(body) {
-  var lines = body.replace(/\r\n/g, '\n').split(/\n/),
-    block = false,
-    sections = {},
-    last;
-
-  lines.forEach(function(l) {
-    var build = l.match(regbuild),
-      endbuild = regend.test(l);
-
-    if(build) {
-      block = true;
-      sections[[build[1], build[2].trim()].join(':')] = last = [];
-    }
-
-    // switch back block flag when endbuild
-    if(block && endbuild) {
-      last.push(l);
-      block = false;
-    }
-
-    if(block && last) {
-      last.push(l);
-    }
-  });
-
-  return sections;
-}
