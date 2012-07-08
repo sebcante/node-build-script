@@ -3,8 +3,15 @@ var path = require('path'),
 
 module.exports = function(grunt) {
   grunt.task.registerTask('rjs', 'Optimizes javascript that actually is built with requirejs.', function () {
-    this.requiresConfig(this.name);
-    grunt.helper('rjs:optimize:js', grunt.config(this.name), this.async());
+    var options = grunt.config(this.name) || {},
+      modules = options.modules;
+
+    if(!options.modules) {
+      grunt.log.writeln('No module found in rjs configuration, bypassing the task...');
+      return;
+    }
+
+    grunt.helper('rjs:optimize:js', options, this.async());
   });
 
   grunt.registerHelper('rjs:optimize:js', function(options, cb) {

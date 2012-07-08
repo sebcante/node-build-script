@@ -77,7 +77,6 @@ module.exports = function(grunt) {
           parts = dest.split(':'),
           type = parts[0],
           output = parts[1],
-          basename = output.replace(path.extname(output), ''),
           content = lines.join('\n');
 
         // concat / min / css / rjs config
@@ -111,13 +110,13 @@ module.exports = function(grunt) {
 
         // min config, only for js type block
         if(type === 'js') {
-          min[basename + '.min.js'] = output;
+          min[output] = output;
           grunt.config('min', min);
         }
 
         // css config, only for css type block
         if(type === 'css') {
-          css[basename + '.min.css'] = output;
+          css[output] = output;
           grunt.config('css', css);
         }
       });
